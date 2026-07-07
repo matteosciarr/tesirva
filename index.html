@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Esperienza VR - Arco di Costantino</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-asset-item id="modello-arco" src="arco.glb"></a-asset-item>
+        <a-asset-item id="modello-giulia" src="giulia3d.glb"></a-asset-item>
+      </a-assets>
+
+      <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
+
+      <a-entity gltf-model="#modello-giulia" position="0 0 -2" scale="0.8 0.8 0.8" rotation="0 0 0"></a-entity>
+
+      <a-entity position="0 0.01 4">
+        <a-camera look-controls wasd-controls>
+          <a-cursor></a-cursor>
+        </a-camera>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
