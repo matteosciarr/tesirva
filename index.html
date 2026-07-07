@@ -2,20 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Esperienza VR - Arco di Costantino</title>
+    <title>Esperienza VR - Arco di Costantino e Acquedotto</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 
     <script>
       AFRAME.registerComponent('parla', {
         init: function () {
-          // Colleghiamo lo script all'elemento audio di Giulia
           var sorgenteAudio = document.querySelector('#audio-giulia');
 
           this.el.addEventListener('click', function () {
-            // Ferma l'audio se sta già suonando, per evitare sovrapposizioni
             sorgenteAudio.components.sound.stopSound();
-            // Fai partire l'audio
             sorgenteAudio.components.sound.playSound();
           });
         }
@@ -27,33 +24,27 @@
       <a-assets>
         <a-asset-item id="modello-arco" src="arco.glb"></a-asset-item>
         <a-asset-item id="modello-giulia" src="giulia3d.glb"></a-asset-item>
+        <a-asset-item id="modello-acquedotto" src="acquedotto.glb"></a-asset-item>
         <audio id="voce-mp3" src="voce.mp3" preload="auto"></audio>
       </a-assets>
 
       <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
 
-      <a-entity position="0 0 -2">
-        
+      <a-entity gltf-model="#modello-acquedotto" position="-11 -1.7 -7" scale="2.5 2.5 2.5" rotation="0 45 0"></a-entity>
+
+      <a-entity position="0 -0.5 -2">
         <a-entity gltf-model="#modello-giulia" scale="0.8 0.8 0.8"></a-entity>
-        
-        <a-sound id="audio-giulia" src="#voce-mp3" positional="true" volume="2"></a-sound>
-        
+        <a-sound id="audio-giulia" src="#voce-mp3" autoplay="false" positional="true" volume="2"></a-sound>
         <a-cylinder class="interattiva" parla position="0 1 0" radius="0.5" height="2" material="opacity: 0.0; transparent: true"></a-cylinder>
-      
       </a-entity>
 
-      <a-sky color="#87CEEB"></a-sky>
-
       <a-entity id="rig" movement-controls="speed: 0.15" position="0 0 4">
-        
         <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: false">
           <a-cursor></a-cursor>
         </a-camera>
 
         <a-entity id="mano-sinistra" oculus-touch-controls="hand: left"></a-entity>
-        
         <a-entity id="mano-destra" laser-controls="hand: right" raycaster="objects: .interattiva"></a-entity>
-        
       </a-entity>
     </a-scene>
   </body>
