@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Esperienza VR - Arco di Costantino</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -13,13 +14,20 @@
       </a-assets>
 
       <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
-
       <a-entity gltf-model="#modello-giulia" position="0 0 -2" scale="0.8 0.8 0.8" rotation="0 0 0"></a-entity>
 
-      <a-entity position="0 0.01 4">
-        <a-camera look-controls wasd-controls>
+      <a-sky color="#87CEEB"></a-sky>
+
+      <a-entity id="rig" movement-controls="speed: 0.15" position="0 0 4">
+        
+        <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: false">
           <a-cursor></a-cursor>
         </a-camera>
+
+        <a-entity oculus-touch-controls="hand: left"></a-entity>
+        
+        <a-entity oculus-touch-controls="hand: right" laser-controls="hand: right"></a-entity>
+        
       </a-entity>
     </a-scene>
   </body>
