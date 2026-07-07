@@ -7,36 +7,18 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 
     <script>
-      AFRAME.registerComponent('interazione-giulia', {
+      AFRAME.registerComponent('parla', {
         init: function () {
           var testoDaLeggere = "L'Arco di Costantino fu eretto nel 315 dopo Cristo per celebrare la vittoria a Ponte Milvio. Molte delle sue statue furono riciclate da monumenti romani più antichi!";
 
-          // Mettiamo in ascolto il tasto 'A' (abuttondown)
-          this.el.addEventListener('abuttondown', function () {
-            // Ora 'this.el' è direttamente il controller destro
-            var raycaster = this.components.raycaster;
-            
-            if (raycaster && raycaster.intersectedEls.length > 0) {
-              var oggettiPuntati = raycaster.intersectedEls;
-              
-              for (var i = 0; i < oggettiPuntati.length; i++) {
-                // Se il laser sta toccando Giulia
-                if (oggettiPuntati[i].id === 'modello-giulia') {
-                  
-                  // Ferma l'audio se stava già parlando
-                  window.speechSynthesis.cancel();
-
-                  // Avvia la nuova lettura
-                  var discorso = new SpeechSynthesisUtterance(testoDaLeggere);
-                  discorso.lang = 'it-IT';
-                  discorso.pitch = 1.2;
-                  discorso.rate = 0.95;
-                  
-                  window.speechSynthesis.speak(discorso);
-                  break;
-                }
-              }
-            }
+          // 'click' è il segnale universale inviato dal Grilletto del controller
+          this.el.addEventListener('click', function () {
+            window.speechSynthesis.cancel();
+            var discorso = new SpeechSynthesisUtterance(testoDaLeggere);
+            discorso.lang = 'it-IT';
+            discorso.pitch = 1.2;
+            discorso.rate = 0.95;
+            window.speechSynthesis.speak(discorso);
           });
         }
       });
@@ -51,7 +33,13 @@
 
       <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
 
-      <a-entity id="modello-giulia" class="interattiva" gltf-model="#modello-giulia" position="0 0 -2" scale="0.8 0.8 0.8" rotation="0 0 0"></a-entity>
+      <a-entity position="0 0 -2">
+        
+        <a-entity gltf-model="#modello-giulia" scale="0.8 0.8 0.8"></a-entity>
+        
+        <a-cylinder class="interattiva" parla position="0 1 0" radius="0.5" height="2" material="opacity: 0.0; transparent: true"></a-cylinder>
+      
+      </a-entity>
 
       <a-sky color="#87CEEB"></a-sky>
 
@@ -63,12 +51,7 @@
 
         <a-entity id="mano-sinistra" oculus-touch-controls="hand: left"></a-entity>
         
-        <a-entity id="mano-destra" 
-                  laser-controls="hand: right" 
-                  raycaster="objects: .interattiva" 
-                  oculus-touch-controls="hand: right" 
-                  interazione-giulia>
-        </a-entity>
+        <a-entity id="mano-destra" laser-controls="hand: right" raycaster="objects: .interattiva"></a-entity>
         
       </a-entity>
     </a-scene>
