@@ -5,6 +5,43 @@
     <title>Esperienza VR - Arco di Costantino</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+
+    <script>
+      AFRAME.registerComponent('interazione-giulia', {
+        init: function () {
+          var controllerDestro = document.querySelector('#mano-destra');
+          
+          // Il testo che verrà pronunciato a voce
+          var testoDaLeggere = "L'Arco di Costantino fu eretto nel 315 dopo Cristo per celebrare la vittoria a Ponte Milvio. Molte delle sue statue furono riciclate da monumenti romani più antichi!";
+
+          this.el.addEventListener('xbuttondown', function () {
+            var raycaster = controllerDestro.components.raycaster;
+            
+            if (raycaster && raycaster.intersectedEls.length > 0) {
+              var oggettiPuntati = raycaster.intersectedEls;
+              
+              for (var i = 0; i < oggettiPuntati.length; i++) {
+                if (oggettiPuntati[i].id === 'modello-giulia') {
+                  
+                  // Ferma Giulia se sta già parlando
+                  window.speechSynthesis.cancel();
+
+                  // Crea l'oggetto vocale
+                  var discorso = new SpeechSynthesisUtterance(testoDaLeggere);
+                  discorso.lang = 'it-IT'; // Imposta la lingua italiana
+                  discorso.pitch = 1.2;    // Alza leggermente il tono per una voce più adatta
+                  discorso.rate = 0.95;    // Leggermente più lenta per scandire bene le parole
+                  
+                  // Riproduci l'audio
+                  window.speechSynthesis.speak(discorso);
+                  break;
+                }
+              }
+            }
+          });
+        }
+      });
+    </script>
   </head>
   <body>
     <a-scene>
@@ -14,7 +51,8 @@
       </a-assets>
 
       <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
-      <a-entity gltf-model="#modello-giulia" position="0 0 -2" scale="0.8 0.8 0.8" rotation="0 0 0"></a-entity>
+
+      <a-entity id="modello-giulia" class="interattiva" gltf-model="#modello-giulia" position="0 0 -2" scale="0.8 0.8 0.8" rotation="0 0 0"></a-entity>
 
       <a-sky color="#87CEEB"></a-sky>
 
@@ -24,9 +62,9 @@
           <a-cursor></a-cursor>
         </a-camera>
 
-        <a-entity oculus-touch-controls="hand: left"></a-entity>
+        <a-entity id="mano-sinistra" oculus-touch-controls="hand: left" interazione-giulia></a-entity>
         
-        <a-entity oculus-touch-controls="hand: right" laser-controls="hand: right"></a-entity>
+        <a-entity id="mano-destra" laser-controls="hand: right" raycaster="objects: .interattiva" oculus-touch-controls="hand: right"></a-entity>
         
       </a-entity>
     </a-scene>
