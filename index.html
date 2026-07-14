@@ -10,12 +10,43 @@
       AFRAME.registerComponent('parla', {
         init: function () {
           var sorgenteAudio = document.querySelector('#audio-giulia');
-
           this.el.addEventListener('click', function () {
             sorgenteAudio.components.sound.stopSound();
             sorgenteAudio.components.sound.playSound();
           });
         }
+      });
+
+      // STRUMENTO DI DEBUG: premi 1 = arco, 2 = giulia, 3 = acquedotto
+      // poi Freccia SU / Freccia GIÙ per alzare/abbassare l'oggetto selezionato di 5cm alla volta.
+      // I valori aggiornati vengono stampati in console (F12 > Console).
+      window.addEventListener('DOMContentLoaded', function () {
+        var selezionato = null;
+        var mappa = {
+          '1': '#entita-arco',
+          '2': '#entita-giulia',
+          '3': '#entita-acquedotto'
+        };
+
+        window.addEventListener('keydown', function (e) {
+          if (mappa[e.key]) {
+            selezionato = document.querySelector(mappa[e.key]);
+            console.log('Selezionato:', mappa[e.key]);
+          }
+          if (!selezionato) return;
+
+          var pos = selezionato.getAttribute('position');
+          var passo = 0.05; // 5 cm per pressione
+
+          if (e.key === 'ArrowUp') {
+            selezionato.setAttribute('position', { x: pos.x, y: pos.y + passo, z: pos.z });
+            console.log(selezionato.id, 'y =', (pos.y + passo).toFixed(2));
+          }
+          if (e.key === 'ArrowDown') {
+            selezionato.setAttribute('position', { x: pos.x, y: pos.y - passo, z: pos.z });
+            console.log(selezionato.id, 'y =', (pos.y - passo).toFixed(2));
+          }
+        });
       });
     </script>
   </head>
@@ -28,16 +59,46 @@
         <audio id="voce-mp3" src="voce.mp3" preload="auto"></audio>
       </a-assets>
 
-      <a-entity gltf-model="#modello-arco" position="0 0.5 -10" scale="1 1 1"></a-entity>
+      <!-- Pavimento infinito -->
+      <a-plane
+        position="0 0 0"
+        rotation="-90 0 0"
+        width="200"
+        height="200"
+        color="#b5a68f"
+        shadow="receive: true">
+      </a-plane>
 
-      <a-entity gltf-model="#modello-acquedotto" position="-11 -1.7 -7" scale="2.5 2.5 2.5" rotation="0 45 0"></a-entity>
+      <!-- Arco di Costantino -->
+      <a-entity
+        id="entita-arco"
+        gltf-model="#modello-arco"
+        position="0 0.8 -10"
+        scale="1 1 1">
+      </a-entity>
 
-      <a-entity position="0 -0.5 -2">
-        <a-entity gltf-model="#modello-giulia" scale="0.8 0.8 0.8"></a-entity>
+      <!-- Acquedotto: valore y di partenza alzato, da regolare col debug -->
+      <a-entity
+        id="entita-acquedotto"
+        gltf-model="#modello-acquedotto"
+        position="-1.85 -1.1 -4"
+        scale="2 2 2"
+        rotation="0 70 0">
+      </a-entity>
+
+      <!-- Giulia: scala aumentata (era troppo piccola), y di partenza da regolare -->
+      <a-entity position="0 0 -2">
+        <a-entity
+          id="entita-giulia"
+          gltf-model="#modello-giulia"
+          position="0 0 0"
+          scale="1.7 1.7 1.7">
+        </a-entity>
         <a-sound id="audio-giulia" src="#voce-mp3" autoplay="false" positional="true" volume="2"></a-sound>
         <a-cylinder class="interattiva" parla position="0 1 0" radius="0.5" height="2" material="opacity: 0.0; transparent: true"></a-cylinder>
       </a-entity>
 
+      <!-- Rig del visitatore -->
       <a-entity id="rig" movement-controls="speed: 0.15" position="0 0 4">
         <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: false">
           <a-cursor></a-cursor>
